@@ -1,0 +1,32 @@
+@import "~vazirmatn/misc/Farsi-Digits/Vazirmatn-FD-font-face.css";
+
+#root, body, html{
+    height:100%;
+    margin: 0;
+    zoom: 100%;
+}
+
+body {
+    direction: rtl;
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(/money.png);
+    background-size: cover;
+}
+
+.Toastify__toast-body {
+    /*font-family: 'IBM Plex Sans Arabic', sans-serif;*/
+    /*font-family: 'IRAN Sans', 'Noto Sans Arabic', sans-serif;*/
+    font-family: 'Vazirmatn FD', sans-serif;
+    direction: rtl;
+    max-width: 85%;
+}
+
+@media (max-width: 480px) {
+    .Toastify__toast-container {
+        max-width: 85vw;
+    }
+}
+
+.MuiTableCell-head:first-child {
+    width: 1px;
+    white-space: nowrap;
+}
