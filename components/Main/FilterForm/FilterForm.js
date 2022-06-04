@@ -31,7 +31,7 @@ import JalaliUtils from "@date-io/jalaali";
 import CalendarTheme from './CalendarTheme';
 // import PropTypes from "prop-types";
 // import {thousandSeparator} from "../../../utils/formatNumbers";
-import {API_URL} from "../../../config";
+import {API_URL, NEXT_URL} from "../../../config";
 import {useDispatch, useSelector} from "react-redux";
 import {formActions} from "../../../store/form-slice";
 import {useCookies} from "react-cookie";
@@ -63,7 +63,8 @@ const initialState = {
 const persianRegex = /[\u0600-\u0605 ؐ-ؚ\u061Cـ ۖ-\u06DD ۟-ۤ ۧ ۨ ۪-ۭ ً-ٕ ٟ ٖ-ٞ ٰ ، ؍ ٫ ٬ ؛ ؞ ؟ ۔ ٭ ٪ ؉ ؊ ؈ ؎ ؏ ۞ ۩ ؆ ؇ ؋ ٠۰ ١۱ ٢۲ ٣۳ ٤۴ ٥۵ ٦۶ ٧۷ ٨۸ ٩۹ ءٴ۽ آ أ ٲ ٱ ؤ إ ٳ ئ ا ٵ ٮ ب ٻ پ ڀ ة-ث ٹ ٺ ټ ٽ ٿ ج ڃ ڄ چ ڿ ڇ ح خ ځ ڂ څ د ذ ڈ-ڐ ۮ ر ز ڑ-ڙ ۯ س ش ښ-ڜ ۺ ص ض ڝ ڞ ۻ ط ظ ڟ ع غ ڠ ۼ ف ڡ-ڦ ٯ ق ڧ ڨ ك ک-ڴ ػ ؼ ل ڵ-ڸ م۾ ن ں-ڽ ڹ ه ھ ہ-ۃ ۿ ەۀ وۥ ٶ ۄ-ۇ ٷ ۈ-ۋ ۏ ى يۦ ٸ ی-ێ ې ۑ ؽ-ؿ ؠ ے ۓ \u061D]/
 // const persianAlphabets=/^[۰۱۲۳۴۵۶۷۸۹]+$/
 
-const FilterForm = () => {
+const FilterForm = ({token}) => {
+    console.log(token)
     const [cookies]=useCookies(['token'])
     const dispatch = useDispatch()
     const formEdit = useSelector(state => state.form.form)
@@ -85,9 +86,10 @@ const FilterForm = () => {
     const selectedCategory = formData.type === 'Income' ? incomeCategories : expenseCategories
 
     const resetHandler = async() =>{
-        axios.get(`${API_URL}/transactions`, {
+        axios.get(`${NEXT_URL}/transactions`, {
             headers: {
-                Authorization: cookies.token
+                Authorization: token,
+                id: ''
             }
         })
             .then(function (response) {
@@ -112,9 +114,10 @@ const FilterForm = () => {
             // console.log(fromDate)
             // console.log(thruDate)
             const addQuery = formData.type!=='All' && formData.type!=='' ? `&filters[type]=${formData.type}` : ''
-            axios.get(`${API_URL}/transactions?filters[date][$gte]=${fromDate}&filters[date][$lte]=${thruDate}${addQuery}`, {
+            axios.get(`${NEXT_URL}/transactions`, {
                 headers: {
-                    Authorization: cookies.token
+                    Authorization: token,
+                    id: `?filters[date][$gte]=${fromDate}&filters[date][$lte]=${thruDate}${addQuery}`
                 }
             })
                 .then(function (response) {

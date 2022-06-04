@@ -31,7 +31,7 @@ import formatDate from "../../../utils/formatDate";
 import {makeStyles} from 'tss-react/mui';
 import NumberFormat from "react-number-format";
 import axios from "axios";
-import {API_URL} from "../../../config";
+import {API_URL, NEXT_URL} from "../../../config";
 import {toast} from "react-toastify";
 import {formActions} from "../../../store/form-slice";
 import {useDispatch, useSelector} from "react-redux";
@@ -189,6 +189,7 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
+    const token = props.token
     const [cookies]=useCookies(['token'])
     const [filter, setFilter] = useState(false)
     const formEdit = useSelector(state => state.form.form)
@@ -211,10 +212,11 @@ const EnhancedTableToolbar = (props) => {
         ))
     }
     const deleteHandler = (id) => {
-        axios.delete(`${API_URL}/transactions/${id}`, {
+        axios.delete(`${NEXT_URL}/transactions`, {
             headers: {
-                Authorization: cookies.token
-            }
+                Authorization: token,
+                id
+            },
         })
             .then(function (response) {
                 // handle success
@@ -239,10 +241,11 @@ const EnhancedTableToolbar = (props) => {
 
     const deleteHandlerMany = (ids) => {
         ids.map(id => {
-            axios.delete(`${API_URL}/transactions/${id}`, {
+            axios.delete(`${NEXT_URL}/transactions`, {
                 headers: {
-                    Authorization: cookies.token
-                }
+                    Authorization: token,
+                    id
+                },
             })
                 .then(function (response) {
                     // handle success
@@ -261,6 +264,7 @@ const EnhancedTableToolbar = (props) => {
                 .then(function () {
                     // always executed
                     props.numSelected.length--;
+                    // setNumSelected(0)
                 })
         })
         // setNumSelected(0)
@@ -341,7 +345,7 @@ const EnhancedTableToolbar = (props) => {
                             </IconButton>
                         </Tooltip>)}
             </Toolbar>
-            {filter && <Box sx={{m: 2}}><FilterForm/></Box>
+            {filter && <Box sx={{m: 2}}><FilterForm token={token}/></Box>
             // <Box sx={{display: 'flex' , width: '100%'}}>
             //     <Grow
             //         in={filter}
@@ -367,7 +371,7 @@ EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
 };
 
-export default function MyEnhancedTable() {
+export default function MyEnhancedTable({token}) {
     const {classes} = useStyles()
     const {transactions} = useContext(ExpenseTrackerContext);
     const [order, setOrder] = React.useState('asc');
@@ -466,7 +470,7 @@ export default function MyEnhancedTable() {
                     width: '100%',
                     mb: 2
                 }}>
-                <EnhancedTableToolbar numSelected={selected}/>
+                <EnhancedTableToolbar numSelected={selected} token={token}/>
                 <TableContainer>
                     <Table
                         sx={{ /*minWidth: 750*/}}

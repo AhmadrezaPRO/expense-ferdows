@@ -22,6 +22,7 @@ const contextReducer = (state, action) => {
             // localStorage.setItem('transactions', JSON.stringify(transactions));
             return transactions;
         case 'EDIT_TRANSACTION':
+            transactions = state.filter((v) => v.id !== action.payload.id)
             // console.log(transactions)
             // console.log(action.payload)
             // transactions = state.filter((v) => v.id !== action.payload.id);

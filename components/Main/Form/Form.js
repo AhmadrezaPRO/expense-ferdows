@@ -31,10 +31,11 @@ import JalaliUtils from "@date-io/jalaali";
 import CalendarTheme from './CalendarTheme';
 // import PropTypes from "prop-types";
 import {thousandSeparator} from "../../../utils/formatNumbers";
-import {API_URL} from "../../../config";
+import {API_URL, NEXT_URL} from "../../../config";
 import {useDispatch, useSelector} from "react-redux";
 import {formActions} from "../../../store/form-slice";
 import {useCookies} from "react-cookie";
+import {siLK} from "@mui/material/locale";
 
 const NumberToPersianWord = require("number_to_persian_word");
 
@@ -99,43 +100,29 @@ const Form = ({token}) => {
             toast.error('مقدار هزینه را صحیح وارد نمایید')
             return
         }
-
-        // console.log(formData)
         const transaction = {
             ...formData,
             amount: formData.amount * 1000,
             // transactionId: uuidv4()
         }
-        // console.log(transaction)
-        axios.post(`${API_URL}/transactions`,
+        axios.post(`${NEXT_URL}/transactions`,
             {
-                data: transaction
-                // {
-                //     type: transaction.type,
-                //     category: transaction.category,
-                //     description: transaction.description,
-                //     amount: transaction.amount,
-                //     date: transaction.date,
-                // }
+                transaction
             }, {
                 headers: {
                     Authorization: token,
                 }
             })
             .then(res => {
-                console.log(res)
+                // console.log(res)
                 addTransactions({
                     ...res.data.data.attributes,
                     id: res.data.data.id
                 })
                 toast.success(`افزودن موفق مورد جدید`)
-                // setActorUpdate()
-                // console.log(res)
-                // console.log(updatedActor)
             })
             .catch(function (error) {
                 console.log(error)
-                // console.log(updatedActor)
                 toast.error(`افزودن ناموفق مورد جدید`)
             })
         setFormData(prevState => (
@@ -173,23 +160,17 @@ const Form = ({token}) => {
             amount: formData.amount * 1000,
             // transactionId: uuidv4()
         }
-        axios.put(`${API_URL}/transactions/${transaction.id}`,
+        axios.put(`${NEXT_URL}/transactions`,
             {
-                data: {
-                    type: transaction.type,
-                    category: transaction.category,
-                    description: transaction.description,
-                    amount: transaction.amount,
-                    date: transaction.date,
-                },
+                transaction
             },
             {
                 headers: {
                     Authorization: token
                 }
             }
-            ).then(res => {
-            console.log(res.data)
+        ).then(res => {
+            console.log(res)
             editTransactions({
                 ...res.data.data.attributes,
                 id: res.data.data.id
@@ -251,12 +232,12 @@ const Form = ({token}) => {
                 ...initialState,
                 type: prevState.type
             }))
-            if (formData.id) {
-                setFormData(prevState => {
-                        return (deleteProperty(prevState, "id"))
-                    }
-                )
-            }
+            // if (formData.id) {
+            //     setFormData(prevState => {
+            //             return (deleteProperty(prevState, "id"))
+            //         }
+            //     )
+            // }
         }
     }, [formEdit])
 
