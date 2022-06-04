@@ -98,6 +98,7 @@ export default ExpenseTracker
 
 export async function getServerSideProps({req}) {
     const {token} = parseCookies(req)
+
     let transactions = null
     const response = await axios.get(`${API_URL}/transactions`, {
         headers: {
