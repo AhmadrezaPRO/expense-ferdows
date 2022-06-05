@@ -55,10 +55,10 @@ export default async (req, res) => {
                 console.log('khata')
             })
     } else if (req.method === 'DELETE') {
-        console.log(req.headers.cookie.slice(6))
+        // console.log(req.headers.cookie.slice(6))
         return axios.delete(`${API_URL}/transactions/${req.headers.id}`, {
             headers: {
-                Authorization: req.headers.cookie.slice(6)
+                Authorization: token
             }
         })
             .then(response => {
@@ -85,6 +85,7 @@ export default async (req, res) => {
             })
             .catch(function (error) {
                 console.log('khata')
+                console.log(error)
             })
     } else {
         res.setHeader('Allow', ['POST'])
