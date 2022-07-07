@@ -53,6 +53,48 @@ export const expenseCategories = [
         amount: 0,
         color: expenseColors[3]
     },
+    {
+        type: 'technical',
+        description: 'حق فنی',
+        amount: 0,
+        color: expenseColors[4]
+    },
+    {
+        type: 'office',
+        description: 'موارد دفتری و اداری',
+        amount: 0,
+        color: expenseColors[5]
+    },
+    {
+        type: 'consume',
+        description: 'موارد مصرفی',
+        amount: 0,
+        color: expenseColors[6]
+    },
+    {
+        type: 'reference',
+        description: 'موارد ارجاعی',
+        amount: 0,
+        color: expenseColors[7]
+    },
+    {
+        type: 'equipment',
+        description: 'تجهیزات',
+        amount: 0,
+        color: expenseColors[8]
+    },
+    {
+        type: 'cytology',
+        description: 'سیتولوژی',
+        amount: 0,
+        color: expenseColors[9]
+    },
+    {
+        type: 'others',
+        description: 'متفرقه',
+        amount: 0,
+        color: expenseColors[10]
+    },
     // { type: 'Food', amount: 0, color: expenseColors[4] },
     // { type: 'Shopping', amount: 0, color: expenseColors[5] },
     // { type: 'House', amount: 0, color: expenseColors[6] },
