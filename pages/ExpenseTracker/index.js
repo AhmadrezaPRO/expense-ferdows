@@ -16,6 +16,7 @@ import {useRouter} from "next/router";
 import {parseCookies} from "../../utils/cookie";
 import logout from "../api/logout";
 import AuthContext from "../../context/AuthContext";
+import Head from 'next/head';
 
 const ExpenseTracker = ({
                             transactions,
@@ -41,8 +42,26 @@ const ExpenseTracker = ({
             initializeTransactions(transactions)
     }, []);
 
+    const title = 'سامانه تنخواه آزمایشگاه فردوس'
     return (
         <Fragment>
+            <Head>
+                <title key={'title'}>{title}</title>
+                <meta
+                    key={'description'}
+                    name='description'
+                    content='لیست کلیه مطالب آموزشی مربوط به آزمایشگاه تشخیص طبی | آزمایشگاه تشخیص طبی و پاتوبیولوژی فردوس مشهد '
+                />
+                <meta
+                    key="og:title"
+                    property="og:title"
+                    content={'آزمایشگاه فردوس مشهد' + '|' + title}/>
+                <link
+                    rel="canonical"
+                    key="canonical"
+                    href="https://expense.ferdowslab.ir"
+                />
+            </Head>
             <Fragment>
                 <Tooltip
                     title={<div
