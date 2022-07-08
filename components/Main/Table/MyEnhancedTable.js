@@ -610,7 +610,7 @@ export default function MyEnhancedTable({token}) {
                                          }) =>
                         `${to}-${from} از ${count}`
                     }
-                    rowsPerPageOptions={[5, 10, 25]}
+                    rowsPerPageOptions={[5, 10, 25 , 50, 100, 200]}
                     component="div"
                     count={rows.length}
                     rowsPerPage={rowsPerPage}
