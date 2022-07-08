@@ -18,13 +18,13 @@ export const incomeCategories = [
         type: 'dabir',
         description: 'صندوق دبیر',
         amount: 0,
-        color: incomeColors[6]
+        color: incomeColors[8]
     },
     {
         type: 'othersIncome',
         description: 'سایر درآمدها',
         amount: 0,
-        color: incomeColors[8]
+        color: incomeColors[2]
     },
     // { type: 'Deposits', amount: 0, color: incomeColors[3] },
     // { type: 'Lottery', amount: 0, color: incomeColors[4] },
