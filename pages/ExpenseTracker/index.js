@@ -119,7 +119,7 @@ export async function getServerSideProps({req}) {
     const {token} = parseCookies(req)
 
     let transactions = null
-    const response = await axios.get(`${API_URL}/transactions`, {
+    const response = await axios.get(`${API_URL}/transactions?pagination[page]=1&pagination[pageSize]=100`, {
         headers: {
             Authorization: `Bearer ${token}`,
         }
