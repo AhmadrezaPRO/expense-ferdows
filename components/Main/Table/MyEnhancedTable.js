@@ -378,7 +378,7 @@ const EnhancedTableToolbar = (props) => {
                         <>
                             <Tooltip title={<div style={{fontFamily: 'Vazirmatn FD, sans-serif'}}>دانلود pdf</div>}>
                                 <IconButton>
-                                    <PictureAsPdf onClick={() => pdfHandler()}/>
+                                    <PictureAsPdf onClick={pdfHandler}/>
                                 </IconButton>
                             </Tooltip>
                             <Tooltip title={<div style={{fontFamily: 'Vazirmatn FD, sans-serif'}}>فیلتر</div>}>
