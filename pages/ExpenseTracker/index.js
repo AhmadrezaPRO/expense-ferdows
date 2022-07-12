@@ -119,17 +119,17 @@ export async function getServerSideProps({req}) {
     const {token} = parseCookies(req)
 
     let transactions = null
-    const response = await axios.get(`${API_URL}/transactions`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        }
-    })
-        .then(response => {
-            transactions = response.data
-        })
-        .catch(function (error) {
-            // console.log(error)
-        })
+    // const response = await axios.get(`${API_URL}/transactions`, {
+    //     headers: {
+    //         Authorization: `Bearer ${token}`,
+    //     }
+    // })
+    //     .then(response => {
+    //         transactions = response.data
+    //     })
+    //     .catch(function (error) {
+    //         // console.log(error)
+    //     })
     return {
         props: {
             transactions,
