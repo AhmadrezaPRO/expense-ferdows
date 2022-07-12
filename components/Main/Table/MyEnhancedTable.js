@@ -220,7 +220,7 @@ const EnhancedTableToolbar = (props) => {
     }
 
     const pdfHandler = ()=>{
-        const doc = new jsPDF()
+        // const doc = new jsPDF()
         // doc.addFileToVFS(
         //     "(A) Arslan Wessam A (A) Arslan Wessam A-normal.ttf",
         //     jspdfFont
@@ -241,19 +241,19 @@ const EnhancedTableToolbar = (props) => {
         //     "normal"
         // );
         // doc.setFont("Amiri")
-        // doc.text('جدول هزینه / درآمد', 550, 40, { align: "right", lang: 'fa' });
-        const pdfRows = rows.map((row , index) => [thousandSeparator(row.amount.toString()), row.description, row.name, formatDate(row.date) , (index+1).toString()])
-        // console.log(pdfRows)
-        doc.text(title, 75, 20);
-        autoTable(doc, {
-            startY: 30,
-            head: [['مبلغ به تومان' ,'توضیحات' ,category,'تاریخ', 'ردیف']],
-            body: pdfRows,
-            // headStyles: { font: "Amiri", fontStyle: 'normal', halign: "right" },
-            // bodyStyles: { font: "AmiriRegular", fontStyle: 'normal', halign: "right" },
-        })
-        // doc.text("نعم ، هذا يعمل يا أخي", 10, 10)
-        doc.save('table.pdf')
+        // // doc.text('جدول هزینه / درآمد', 550, 40, { align: "right", lang: 'fa' });
+        // const pdfRows = rows.map((row , index) => [thousandSeparator(row.amount.toString()), row.description, row.name, formatDate(row.date) , (index+1).toString()])
+        // // console.log(pdfRows)
+        // doc.text(title, 75, 20);
+        // autoTable(doc, {
+        //     startY: 30,
+        //     head: [['مبلغ به تومان' ,'توضیحات' ,category,'تاریخ', 'ردیف']],
+        //     body: pdfRows,
+        //     headStyles: { font: "Amiri", fontStyle: 'normal', halign: "right" },
+        //     bodyStyles: { font: "AmiriRegular", fontStyle: 'normal', halign: "right" },
+        // })
+        // // doc.text("نعم ، هذا يعمل يا أخي", 10, 10)
+        // doc.save('table.pdf')
     }
 
     const deleteHandler = (id) => {
