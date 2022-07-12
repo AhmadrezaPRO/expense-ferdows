@@ -219,7 +219,7 @@ const EnhancedTableToolbar = (props) => {
         ))
     }
 
-    const pdfHandler = ()=>{
+    // const pdfHandler = ()=>{
         // const doc = new jsPDF()
         // doc.addFileToVFS(
         //     "(A) Arslan Wessam A (A) Arslan Wessam A-normal.ttf",
@@ -254,7 +254,7 @@ const EnhancedTableToolbar = (props) => {
         // })
         // // doc.text("نعم ، هذا يعمل يا أخي", 10, 10)
         // doc.save('table.pdf')
-    }
+    // }
 
     const deleteHandler = (id) => {
         axios.delete(`${NEXT_URL}/transactions`, {
@@ -378,7 +378,7 @@ const EnhancedTableToolbar = (props) => {
                         <>
                             <Tooltip title={<div style={{fontFamily: 'Vazirmatn FD, sans-serif'}}>دانلود pdf</div>}>
                                 <IconButton>
-                                    <PictureAsPdf onClick={pdfHandler}/>
+                                    <PictureAsPdf />
                                 </IconButton>
                             </Tooltip>
                             <Tooltip title={<div style={{fontFamily: 'Vazirmatn FD, sans-serif'}}>فیلتر</div>}>
