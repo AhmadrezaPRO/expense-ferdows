@@ -31,7 +31,7 @@ import formatDate from "../../../utils/formatDate";
 import {makeStyles} from 'tss-react/mui';
 import NumberFormat from "react-number-format";
 import axios from "axios";
-import {API_URL, jspdfFont, jspdfFontRegular, NEXT_URL} from "../../../config";
+import {API_URL, NEXT_URL} from "../../../config";
 import {toast} from "react-toastify";
 import {formActions} from "../../../store/form-slice";
 import {useDispatch, useSelector} from "react-redux";
@@ -39,10 +39,6 @@ import FilterForm from "../FilterForm/FilterForm";
 import {Fragment} from "react";
 import {Grow} from "@mui/material";
 import {useCookies} from "react-cookie";
-import {PictureAsPdf} from "@mui/icons-material";
-// import jsPDF from 'jspdf';
-// import autoTable from "jspdf-autotable";
-// import {thousandSeparator} from "../../../utils/formatNumbers";
 
 const useStyles = makeStyles()({
     tableCell: {
@@ -194,10 +190,7 @@ EnhancedTableHead.propTypes = {
 
 const EnhancedTableToolbar = (props) => {
     const token = props.token
-    const rows = props.rows
-    const title = props.title
-    const category= title.replace(' آزمایشگاه فردوس', '')
-    const [cookies] = useCookies(['token'])
+    const [cookies]=useCookies(['token'])
     const [filter, setFilter] = useState(false)
     const formEdit = useSelector(state => state.form.form)
     const dispatch = useDispatch()
@@ -218,44 +211,6 @@ const EnhancedTableToolbar = (props) => {
             transaction
         ))
     }
-
-    // const pdfHandler = ()=>{
-        // const doc = new jsPDF()
-        // doc.addFileToVFS(
-        //     "(A) Arslan Wessam A (A) Arslan Wessam A-normal.ttf",
-        //     jspdfFont
-        // );
-        // doc.addFont(
-        //     "(A) Arslan Wessam A (A) Arslan Wessam A-normal.ttf",
-        //     "Amiri",
-        //     "normal"
-        // );
-        //
-        // doc.addFileToVFS(
-        //     "regular.ttf",
-        //     jspdfFontRegular
-        // );
-        // doc.addFont(
-        //     "regular.ttf",
-        //     "AmiriRegular",
-        //     "normal"
-        // );
-        // doc.setFont("Amiri")
-        // // doc.text('جدول هزینه / درآمد', 550, 40, { align: "right", lang: 'fa' });
-        // const pdfRows = rows.map((row , index) => [thousandSeparator(row.amount.toString()), row.description, row.name, formatDate(row.date) , (index+1).toString()])
-        // // console.log(pdfRows)
-        // doc.text(title, 75, 20);
-        // autoTable(doc, {
-        //     startY: 30,
-        //     head: [['مبلغ به تومان' ,'توضیحات' ,category,'تاریخ', 'ردیف']],
-        //     body: pdfRows,
-        //     headStyles: { font: "Amiri", fontStyle: 'normal', halign: "right" },
-        //     bodyStyles: { font: "AmiriRegular", fontStyle: 'normal', halign: "right" },
-        // })
-        // // doc.text("نعم ، هذا يعمل يا أخي", 10, 10)
-        // doc.save('table.pdf')
-    // }
-
     const deleteHandler = (id) => {
         axios.delete(`${NEXT_URL}/transactions`, {
             headers: {
@@ -375,21 +330,14 @@ const EnhancedTableToolbar = (props) => {
                             </Tooltip>
                         </>
                     ) : (numSelected === 0) ? (
-                        <>
-                            <Tooltip title={<div style={{fontFamily: 'Vazirmatn FD, sans-serif'}}>دانلود pdf</div>}>
-                                <IconButton>
-                                    <PictureAsPdf />
-                                </IconButton>
-                            </Tooltip>
-                            <Tooltip title={<div style={{fontFamily: 'Vazirmatn FD, sans-serif'}}>فیلتر</div>}>
-                                <IconButton>
-                                    {!filter ?
-                                        <FilterListIcon onClick={() => toggleFilter()}/>
-                                        : <FilterListOffIcon onClick={() => toggleFilter()}/>
-                                    }
-                                </IconButton>
-                            </Tooltip>
-                        </>
+                        <Tooltip title={<div style={{fontFamily: 'Vazirmatn FD, sans-serif'}}>فیلتر</div>}>
+                            <IconButton>
+                                {!filter ?
+                                    <FilterListIcon onClick={() => toggleFilter()}/>
+                                    : <FilterListOffIcon onClick={() => toggleFilter()}/>
+                                }
+                            </IconButton>
+                        </Tooltip>
                     ) : (
                         <Tooltip title={<div style={{fontFamily: 'Vazirmatn FD, sans-serif'}}>حذف</div>}>
                             <IconButton>
@@ -398,17 +346,17 @@ const EnhancedTableToolbar = (props) => {
                         </Tooltip>)}
             </Toolbar>
             {filter && <Box sx={{m: 2}}><FilterForm token={token}/></Box>
-                // <Box sx={{display: 'flex' , width: '100%'}}>
-                //     <Grow
-                //         in={filter}
-                //         style={{transformOrigin: '0 0 0'}}
-                //         {...(filter ? {timeout: 1000} : {})}
-                //     >
-                //         <Paper>
-                //             <FilterForm/>
-                //         </Paper>
-                //     </Grow>
-                // </Box>
+            // <Box sx={{display: 'flex' , width: '100%'}}>
+            //     <Grow
+            //         in={filter}
+            //         style={{transformOrigin: '0 0 0'}}
+            //         {...(filter ? {timeout: 1000} : {})}
+            //     >
+            //         <Paper>
+            //             <FilterForm/>
+            //         </Paper>
+            //     </Grow>
+            // </Box>
             }
             {/*{filter && <Fragment>*/}
             {/*    <FilterForm />*/}
@@ -433,17 +381,8 @@ export default function MyEnhancedTable({token}) {
     const [dense, setDense] = React.useState(true);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const myTransactions = [...transactions]
-    console.log(myTransactions)
-    let pdfTitle= 'هزینه/درآمد آزمایشگاه فردوس'
-    // const expense = myTransactions.find( transaction => transaction.type === 'Expense')
-    // const income = myTransactions.find( transaction => transaction.type === 'Income')
-    //
-    // if (expense && income ) pdfTitle= 'هزینه/درآمد آزمایشگاه فردوس'
-    // else if (expense) pdfTitle = 'هزینه آزمایشگاه فردوس'
-    // else if (income) pdfTitle = 'درآمد آزمایشگاه فردوس'
-
     myTransactions.sort((a, b) => {
-        return a.date.localeCompare(b.date)
+        return b.updatedAt.localeCompare(a.updatedAt)
     })
     const rows = myTransactions.map((t) => {
         const selectedCategory = t.type === 'Income' ? incomeCategories : expenseCategories
@@ -531,11 +470,7 @@ export default function MyEnhancedTable({token}) {
                     width: '100%',
                     mb: 2
                 }}>
-                <EnhancedTableToolbar
-                    title={pdfTitle}
-                    rows={rows}
-                    numSelected={selected}
-                    token={token}/>
+                <EnhancedTableToolbar numSelected={selected} token={token}/>
                 <TableContainer>
                     <Table
                         sx={{ /*minWidth: 750*/}}
@@ -675,7 +610,7 @@ export default function MyEnhancedTable({token}) {
                                          }) =>
                         `${to}-${from} از ${count}`
                     }
-                    rowsPerPageOptions={[5, 10, 25, 50, 100, 200]}
+                    rowsPerPageOptions={[5, 10, 25 , 50, 100, 200]}
                     component="div"
                     count={rows.length}
                     rowsPerPage={rowsPerPage}
