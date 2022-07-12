@@ -19,7 +19,7 @@
     "@reduxjs/toolkit": "^1.8.2",
     "cookie": "^0.5.0",
     "moment": "^2.29.3",
-    "next": "latest",
+    "next": "12.2.2",
     "prop-types": "latest",
     "react": "latest",
     "react-chartjs-2": "^4.1.0",
