@@ -39,10 +39,9 @@ import FilterForm from "../FilterForm/FilterForm";
 import {Fragment} from "react";
 import {Grow} from "@mui/material";
 import {useCookies} from "react-cookie";
-import {PictureAsPdf} from "@mui/icons-material";
-// import jsPDF from 'jspdf';
-// import autoTable from "jspdf-autotable";
-import {thousandSeparator} from "../../../utils/formatNumbers";
+import jsPDF from 'jspdf';
+import autoTable from "jspdf-autotable";
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 const useStyles = makeStyles()({
     tableCell: {
