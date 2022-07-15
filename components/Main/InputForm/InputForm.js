@@ -36,7 +36,7 @@ import {API_URL} from "../../../config";
 import {useDispatch, useSelector} from "react-redux";
 import {formActions} from "../../../store/form-slice";
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
-import {useCookies} from "react-cookie";
+// import {useCookies} from "react-cookie";
 
 const NumberToPersianWord = require("number_to_persian_word");
 
@@ -65,8 +65,8 @@ const initialState = {
 const persianRegex = /[\u0600-\u0605 ؐ-ؚ\u061Cـ ۖ-\u06DD ۟-ۤ ۧ ۨ ۪-ۭ ً-ٕ ٟ ٖ-ٞ ٰ ، ؍ ٫ ٬ ؛ ؞ ؟ ۔ ٭ ٪ ؉ ؊ ؈ ؎ ؏ ۞ ۩ ؆ ؇ ؋ ٠۰ ١۱ ٢۲ ٣۳ ٤۴ ٥۵ ٦۶ ٧۷ ٨۸ ٩۹ ءٴ۽ آ أ ٲ ٱ ؤ إ ٳ ئ ا ٵ ٮ ب ٻ پ ڀ ة-ث ٹ ٺ ټ ٽ ٿ ج ڃ ڄ چ ڿ ڇ ح خ ځ ڂ څ د ذ ڈ-ڐ ۮ ر ز ڑ-ڙ ۯ س ش ښ-ڜ ۺ ص ض ڝ ڞ ۻ ط ظ ڟ ع غ ڠ ۼ ف ڡ-ڦ ٯ ق ڧ ڨ ك ک-ڴ ػ ؼ ل ڵ-ڸ م۾ ن ں-ڽ ڹ ه ھ ہ-ۃ ۿ ەۀ وۥ ٶ ۄ-ۇ ٷ ۈ-ۋ ۏ ى يۦ ٸ ی-ێ ې ۑ ؽ-ؿ ؠ ے ۓ \u061D]/
 // const persianAlphabets=/^[۰۱۲۳۴۵۶۷۸۹]+$/
 
-const InputForm = () => {
-    const [cookies]=useCookies(['token'])
+const InputForm = ({token}) => {
+    // const [cookies]=useCookies(['token'])
     const dispatch = useDispatch()
     const formEdit = useSelector(state => state.form.form)
     const [dateError, setDateError] = useState(false)
@@ -89,7 +89,7 @@ const InputForm = () => {
     const resetHandler = async () => {
         axios.get(`${API_URL}/transactions`, {
             headers: {
-                Authorization: cookies.token
+                Authorization: token
             }
         })
             .then(function (response) {
@@ -116,7 +116,7 @@ const InputForm = () => {
             const addQuery = formData.type !== 'All' && formData.type !== '' ? `&filters[type]=${formData.type}` : ''
             axios.get(`${API_URL}/transactions?filters[date][$gte]=${fromDate}&filters[date][$lte]=${thruDate}${addQuery}`, {
                 headers: {
-                    Authorization: cookies.token
+                    Authorization: token
                 }
             })
                 .then(function (response) {

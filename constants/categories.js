@@ -49,7 +49,7 @@ export const expenseCategories = [
     },
     {
         type: 'delivery',
-        description: 'پیک',
+        description: 'ایاب و ذهاب',
         amount: 0,
         color: expenseColors[2]
     },

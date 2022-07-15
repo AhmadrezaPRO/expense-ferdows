@@ -193,13 +193,14 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
+    const filterEdit = useSelector(state => state.filterForm.filterForm)
     const token = props.token
     const rows = props.rows
     const title = props.title
-    const category= title.replace(' آزمایشگاه فردوس', '')
+    const category = title.replace(' آزمایشگاه فردوس', '')
     const [cookies] = useCookies(['token'])
     const [filter, setFilter] = useState(false)
-    const formEdit = useSelector(state => state.form.form)
+    const f = useSelector(state => state.form.form)
     const dispatch = useDispatch()
     const {
         transactions,
@@ -219,7 +220,7 @@ const EnhancedTableToolbar = (props) => {
         ))
     }
 
-    const pdfHandler = ()=>{
+    const pdfHandler = () => {
         const doc = new jsPDF()
         doc.addFileToVFS(
             "(A) Arslan Wessam A (A) Arslan Wessam A-normal.ttf",
@@ -242,15 +243,47 @@ const EnhancedTableToolbar = (props) => {
         );
         doc.setFont("Amiri")
         // doc.text('جدول هزینه / درآمد', 550, 40, { align: "right", lang: 'fa' });
-        const pdfRows = rows.map((row , index) => [thousandSeparator(row.amount.toString()), row.description, row.name, formatDate(row.date) , (index+1).toString()])
+        const pdfRows = rows.map((row, index) => [thousandSeparator(row.amount.toString()), row.description, row.name, formatDate(row.date), (index + 1).toString()])
         // console.log(pdfRows)
         doc.text(title, 75, 20);
+        // console.log(filterEdit)
+        doc.setFont("AmiriRegular")
+        if (filterEdit && filterEdit.fromDate && filterEdit.thruDate) {
+            doc.setFontSize(10)
+            doc.text(`${filterEdit?.fromDate} :از تاریخ`, 195, 25, {align: 'right'})
+            doc.text(`${filterEdit?.thruDate} :تا تاریخ`, 40, 25, {align: 'right'})
+            // doc.text(`نوع ${category}: ${filterEdit?.categories.join(' - ')} `, 170, 30, {align: 'right'})
+        }
+        if (filterEdit.categories.length > 0)
+            autoTable(doc, {
+                startY: 30,
+                head: [[`نوع ${category}`]],
+                body: [[`${filterEdit?.categories.join(' - ')} `]],
+                headStyles: {
+                    font: "Amiri",
+                    fontStyle: 'normal',
+                    halign: "right"
+                },
+                bodyStyles: {
+                    font: "AmiriRegular",
+                    fontStyle: 'normal',
+                    halign: "right"
+                },
+            })
         autoTable(doc, {
-            startY: 30,
-            head: [['مبلغ به تومان' ,'توضیحات' ,category,'تاریخ', 'ردیف']],
+            startY: filterEdit.categories.length > 0 ? 50 : 30,
+            head: [['مبلغ به تومان', 'توضیحات', category, 'تاریخ', 'ردیف']],
             body: pdfRows,
-            headStyles: { font: "Amiri", fontStyle: 'normal', halign: "right" },
-            bodyStyles: { font: "AmiriRegular", fontStyle: 'normal', halign: "right" },
+            headStyles: {
+                font: "Amiri",
+                fontStyle: 'normal',
+                halign: "right"
+            },
+            bodyStyles: {
+                font: "AmiriRegular",
+                fontStyle: 'normal',
+                halign: "right"
+            },
         })
         // doc.text("نعم ، هذا يعمل يا أخي", 10, 10)
         doc.save('table.pdf')
@@ -364,14 +397,14 @@ const EnhancedTableToolbar = (props) => {
                     numSelected === 1 ? (
                         <>
                             <Tooltip title={<div style={{fontFamily: 'Vazirmatn FD, sans-serif'}}>ویرایش</div>}>
-                                <IconButton>
-                                    <EditIcon onClick={() => editHandler(transactions.filter(t => t.id === selectedIds[0])[0])}/>
-                                </IconButton>
+                                {/*<IconButton>*/}
+                                <EditIcon onClick={() => editHandler(transactions.filter(t => t.id === selectedIds[0])[0])}/>
+                                {/*</IconButton>*/}
                             </Tooltip>
                             <Tooltip title={<div style={{fontFamily: 'Vazirmatn FD, sans-serif'}}>حدف</div>}>
-                                <IconButton>
-                                    <DeleteIcon onClick={() => deleteHandler(selectedIds[0])}/>
-                                </IconButton>
+                                {/*<IconButton>*/}
+                                <DeleteIcon onClick={() => deleteHandler(selectedIds[0])}/>
+                                {/*</IconButton>*/}
                             </Tooltip>
                         </>
                     ) : (numSelected === 0) ? (
@@ -434,13 +467,13 @@ export default function MyEnhancedTable({token}) {
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const myTransactions = [...transactions]
     console.log(myTransactions)
-    let pdfTitle= 'هزینه/درآمد آزمایشگاه فردوس'
-    // const expense = myTransactions.find( transaction => transaction.type === 'Expense')
-    // const income = myTransactions.find( transaction => transaction.type === 'Income')
+    let pdfTitle = 'هزینه/درآمد آزمایشگاه فردوس'
+    const expense = transactions.find(transaction => transaction.type === 'Expense')
+    const income = transactions.find(transaction => transaction.type === 'Income')
     //
-    // if (expense && income ) pdfTitle= 'هزینه/درآمد آزمایشگاه فردوس'
-    // else if (expense) pdfTitle = 'هزینه آزمایشگاه فردوس'
-    // else if (income) pdfTitle = 'درآمد آزمایشگاه فردوس'
+    if (expense && income) pdfTitle = 'هزینه/درآمد آزمایشگاه فردوس'
+    else if (expense) pdfTitle = 'هزینه آزمایشگاه فردوس'
+    else if (income) pdfTitle = 'درآمد آزمایشگاه فردوس'
 
     myTransactions.sort((a, b) => {
         return a.date.localeCompare(b.date)

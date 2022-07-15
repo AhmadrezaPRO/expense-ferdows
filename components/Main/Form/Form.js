@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 // import {v4 as uuidv4} from 'uuid';
 
-import {ExpenseTrackerContext} from '../../../context/context';
+import {ExpenseTrackerContext} from 'context/context';
 // import formatDate from '../../../utils/formatDate';
 import {incomeCategories, expenseCategories} from '../../../constants/categories';
 import useStyles from './style';

@@ -12,11 +12,11 @@ import {
     Button,
     Select,
     InputLabel,
-    ThemeProvider, InputAdornment, FormHelperText
+    ThemeProvider, InputAdornment, FormHelperText, FormGroup, FormControlLabel, Checkbox, OutlinedInput, ListItemText
 } from '@mui/material';
 // import {v4 as uuidv4} from 'uuid';
 
-import {ExpenseTrackerContext} from '../../../context/context';
+import {ExpenseTrackerContext} from 'context/context';
 // import formatDate from '../../../utils/formatDate';
 import {incomeCategories, expenseCategories} from '../../../constants/categories';
 import useStyles from './style';
@@ -31,13 +31,15 @@ import JalaliUtils from "@date-io/jalaali";
 import CalendarTheme from './CalendarTheme';
 // import PropTypes from "prop-types";
 // import {thousandSeparator} from "../../../utils/formatNumbers";
-import {API_URL, NEXT_URL} from "../../../config";
+import {API_URL, NEXT_URL} from "config";
 import {useDispatch, useSelector} from "react-redux";
-import {formActions} from "../../../store/form-slice";
-import {useCookies} from "react-cookie";
+import {filterFormActions} from "../../../store/filterForm-slice";
+import formatDate from "utils/formatDate";
+// import {useCookies} from "react-cookie";
 
 const NumberToPersianWord = require("number_to_persian_word");
 
+const _ = require('lodash');
 
 jMoment.loadPersian({
     dialect: "persian-modern",
@@ -53,6 +55,7 @@ const sx = {
 const initialState = {
     type: '',
     category: '',
+    categories: [],
     // description: '',
     // amount: '',
     // date: new Date(),
@@ -60,14 +63,40 @@ const initialState = {
     thruDate: moment()
 }
 
+// const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+    PaperProps: {
+        style: {
+            // maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: 250,
+        },
+    },
+};
+
+const names = [
+    'Oliver Hansen',
+    'Van Henry',
+    'April Tucker',
+    'Ralph Hubbard',
+    'Omar Alexander',
+    'Carlos Abbott',
+    'Miriam Wagner',
+    'Bradley Wilkerson',
+    'Virginia Andrews',
+    'Kelly Snyder',
+];
+
+
 const persianRegex = /[\u0600-\u0605 ؐ-ؚ\u061Cـ ۖ-\u06DD ۟-ۤ ۧ ۨ ۪-ۭ ً-ٕ ٟ ٖ-ٞ ٰ ، ؍ ٫ ٬ ؛ ؞ ؟ ۔ ٭ ٪ ؉ ؊ ؈ ؎ ؏ ۞ ۩ ؆ ؇ ؋ ٠۰ ١۱ ٢۲ ٣۳ ٤۴ ٥۵ ٦۶ ٧۷ ٨۸ ٩۹ ءٴ۽ آ أ ٲ ٱ ؤ إ ٳ ئ ا ٵ ٮ ب ٻ پ ڀ ة-ث ٹ ٺ ټ ٽ ٿ ج ڃ ڄ چ ڿ ڇ ح خ ځ ڂ څ د ذ ڈ-ڐ ۮ ر ز ڑ-ڙ ۯ س ش ښ-ڜ ۺ ص ض ڝ ڞ ۻ ط ظ ڟ ع غ ڠ ۼ ف ڡ-ڦ ٯ ق ڧ ڨ ك ک-ڴ ػ ؼ ل ڵ-ڸ م۾ ن ں-ڽ ڹ ه ھ ہ-ۃ ۿ ەۀ وۥ ٶ ۄ-ۇ ٷ ۈ-ۋ ۏ ى يۦ ٸ ی-ێ ې ۑ ؽ-ؿ ؠ ے ۓ \u061D]/
 // const persianAlphabets=/^[۰۱۲۳۴۵۶۷۸۹]+$/
 
 const FilterForm = ({token}) => {
     console.log(token)
-    const [cookies]=useCookies(['token'])
+    // const [cookies] = useCookies(['token'])
     const dispatch = useDispatch()
-    const formEdit = useSelector(state => state.form.form)
+    const filterEdit = useSelector(state => state.filterForm.filterForm)
+    console.log(filterEdit)
     const [dateError, setDateError] = useState(false)
     const {classes} = useStyles();
     const [formData, setFormData] = useState(initialState);
@@ -77,7 +106,7 @@ const FilterForm = ({token}) => {
         transactions
     } = useContext(ExpenseTrackerContext);
     const amountHasError = !formData.amount || formData.amount > 1000000000000 || formData.amount <= 0 || isNaN(formData.amount)
-    const myType = formData.type === 'Expense' ? 'هزینه' : 'درآمد'
+    const myType = formData.type === 'Expense' ? 'هزینه' : formData.type === 'Income' && 'درآمد'
     const deleteProperty = ({
                                 [key]: _,
                                 ...newObj
@@ -85,7 +114,18 @@ const FilterForm = ({token}) => {
 
     const selectedCategory = formData.type === 'Income' ? incomeCategories : expenseCategories
 
-    const resetHandler = async() =>{
+    const handleChangeMulti = (event) => {
+        const {
+            target: { value },
+        } = event;
+        console.log(event)
+        setFormData({
+            ...formData,
+            categories: (typeof value === 'string' ? value.split(',') : value)
+        })
+    };
+
+    const resetHandler = async () => {
         axios.get(`${NEXT_URL}/transactions`, {
             headers: {
                 Authorization: token,
@@ -94,6 +134,12 @@ const FilterForm = ({token}) => {
         })
             .then(function (response) {
                 initializeTransactions(response.data)
+                setFormData(initialState)
+                dispatch(filterFormActions.setFilterForm({
+                    ...formData,
+                    fromDate: checked && formatDate(formData.fromDate._d),
+                    thruDate: checked && formatDate(formData.thruDate._d)
+                }))
                 toast.success('دریافت موفق اطلاعات 👌')
             })
             .catch(function (error) {
@@ -113,16 +159,35 @@ const FilterForm = ({token}) => {
             const thruDate = NumberToPersianWord.convertPeToEn(formData.thruDate.format('YYYY-MM-DD'))
             // console.log(fromDate)
             // console.log(thruDate)
-            const addQuery = formData.type!=='All' && formData.type!=='' ? `&filters[type]=${formData.type}` : ''
+            console.log(checked)
+            // const categories = formData.categories
+            // const multiCategories = _.cloneDeep( formData.categories ).map((description)=>{
+            //     return selectedCategory.find( item => item.description === description).type
+            // })
+            const categories = formData.categories.map((description)=>{
+                return selectedCategory.find( item => item.description === description).type
+            })
+            // console.log(multiCategories)
+            // console.log(categories)
+            const dateQuery= checked ? `?filters[date][$gte]=${fromDate}&filters[date][$lte]=${thruDate}` : '?'
+            const typeQuery = formData.type !== 'All' && formData.type !== '' ? `&filters[type]=${formData.type}` : ''
+            // const categoryQuery = formData.category !== 'All' && formData.category !== '' ? `&filters[category]=${formData.category}` : ''
+            const categoriesQuery = formData.categories.length>0 ? categories.map((category)=> (`&filters[category]=${category}`)).join('') : ''
+            console.log(categoriesQuery)
             axios.get(`${NEXT_URL}/transactions`, {
                 headers: {
                     Authorization: token,
-                    id: `?filters[date][$gte]=${fromDate}&filters[date][$lte]=${thruDate}${addQuery}`
+                    id: `${dateQuery}${typeQuery}${categoriesQuery}`
                 }
             })
                 .then(function (response) {
                     initializeTransactions(response.data)
                     toast.success('دریافت موفق اطلاعات 👌')
+                    dispatch(filterFormActions.setFilterForm({
+                        ...formData,
+                        fromDate: checked && formatDate(formData.fromDate._d),
+                        thruDate: checked && formatDate(formData.thruDate._d)
+                    }))
                 })
                 .catch(function (error) {
                     // handle error
@@ -142,6 +207,15 @@ const FilterForm = ({token}) => {
             // })
         } else toast.error('فیلد تا تاریخ باید بزرگتر باشد')
     }
+
+    //checkbox
+    const [checked, setChecked] = React.useState(false);
+
+    const handleChange = (event) => {
+        setChecked(event.target.checked);
+    };
+
+    console.log(formData.categories)
 
     return (
         <Grid
@@ -163,8 +237,8 @@ const FilterForm = ({token}) => {
                 alignItems="center"
                 direction="row"
                 item
-                xs={12}>
-                <FormControl sx={{width: '50%'}}>
+                xs={(myType ? 6 : 12)}>
+                <FormControl sx={{width: (myType ? '100%' : '50%')}}>
                     <InputLabel
                         dir={'rtl'}
                         sx={sx.inputLabel}>&nbsp;درآمد یا هزینه&nbsp;</InputLabel>
@@ -174,13 +248,83 @@ const FilterForm = ({token}) => {
                             ...formData,
                             type: e.target.value,
                             category: '',
+                            categories: [],
                         })}>
                         {/*<MenuItem value="Income">Income</MenuItem>*/}
                         <MenuItem value="All">همه</MenuItem>
                         <MenuItem value="Expense">هزینه</MenuItem>
                         <MenuItem value="Income">درآمد</MenuItem>
                     </Select>
+                    <FormHelperText error={true}>&nbsp;</FormHelperText>
                 </FormControl>
+            </Grid>
+            {
+                myType &&
+                <Grid
+                    item
+                    xs={6}>
+                    <FormControl fullWidth>
+                        <InputLabel sx={sx.inputLabel} id="demo-multiple-checkbox-label">&nbsp;نوع {myType}</InputLabel>
+                        <Select
+                            labelId="demo-multiple-checkbox-label"
+                            id="demo-multiple-checkbox"
+                            multiple
+                            value={formData.categories}
+                            onChange={handleChangeMulti}
+                            input={<OutlinedInput label="Tag" />}
+                            renderValue={(selected) => selected.join(', ')}
+                            MenuProps={MenuProps}
+                        >
+                            {selectedCategory.map((item) => (
+                                <MenuItem key={item.type} value={item.description}>
+                                    <Checkbox checked={formData.categories.indexOf(item.description) > -1} />
+                                    <ListItemText primary={item.description} />
+                                </MenuItem>
+                            ))}
+                        </Select>
+                        <FormHelperText error={true}>
+                            {/*{!formData.category ? `نوع ${myType} انتخاب شود` : null}*/}
+                        </FormHelperText>
+                    </FormControl>
+                </Grid>
+                // <Grid
+                //     item
+                //     xs={6}>
+                //     <FormControl
+                //         // required={true}
+                //         fullWidth
+                //         focused
+                //         error={!formData.category}>
+                //         <InputLabel sx={sx.inputLabel}>&nbsp;نوع {myType}</InputLabel>
+                //         <Select
+                //             error={!formData.category}
+                //             value={formData.category}
+                //             onChange={(e) => setFormData({
+                //                 ...formData,
+                //                 category: e.target.value
+                //             })}>
+                //             {selectedCategory.map((c) => (
+                //                 <MenuItem
+                //                     key={c.type}
+                //                     value={c.type}>{c.description}</MenuItem>
+                //             ))}
+                //         </Select>
+                //         {/*<FormHelperText error={true}>{!formData.category ? `نوع ${myType} انتخاب شود` : null}</FormHelperText>*/}
+                //     </FormControl>
+                // </Grid>
+            }
+            <Grid
+                item
+                xs={12}>
+                <FormGroup>
+                    <FormControlLabel
+                        control={<Checkbox
+                            checked={checked}
+                            onChange={handleChange}
+                            inputProps={{'aria-label': 'controlled'}}/>
+                        }
+                        label="ثبت تاریخ"/>
+                </FormGroup>
             </Grid>
             <Grid
                 item
@@ -197,6 +341,7 @@ const FilterForm = ({token}) => {
                         {/*    fullWidth/>*/}
 
                         <DatePicker
+                            disabled={!checked}
                             label={'از تاریخ'}
                             onError={(e) => setDateError(true)}
                             onAccept={() => setDateError(false)}
@@ -240,6 +385,7 @@ const FilterForm = ({token}) => {
                         {/*    fullWidth/>*/}
 
                         <DatePicker
+                            disabled={!checked}
                             label={'تا تاریخ'}
                             onError={(e) => setDateError(true)}
                             onAccept={() => setDateError(false)}
