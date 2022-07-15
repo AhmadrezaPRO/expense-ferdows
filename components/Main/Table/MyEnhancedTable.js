@@ -31,9 +31,9 @@ import formatDate from "../../../utils/formatDate";
 import {makeStyles} from 'tss-react/mui';
 import NumberFormat from "react-number-format";
 import axios from "axios";
-import {API_URL, jspdfFont, jspdfFontRegular, NEXT_URL} from "../../../config";
+import {API_URL, jspdfFont, jspdfFontRegular, NEXT_URL} from "config";
 import {toast} from "react-toastify";
-import {formActions} from "../../../store/form-slice";
+import {formActions} from "store/form-slice";
 import {useDispatch, useSelector} from "react-redux";
 import FilterForm from "../FilterForm/FilterForm";
 import {Fragment} from "react";
@@ -42,7 +42,7 @@ import {useCookies} from "react-cookie";
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import jsPDF from 'jspdf';
 import autoTable from "jspdf-autotable";
-import {thousandSeparator} from "../../../utils/formatNumbers";
+import {thousandSeparator} from "utils/formatNumbers";
 
 const useStyles = makeStyles()({
     tableCell: {
@@ -193,6 +193,7 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
+    const {balance} = useContext(ExpenseTrackerContext)
     const filterEdit = useSelector(state => state.filterForm.filterForm)
     const token = props.token
     const rows = props.rows
@@ -245,16 +246,18 @@ const EnhancedTableToolbar = (props) => {
         // doc.text('جدول هزینه / درآمد', 550, 40, { align: "right", lang: 'fa' });
         const pdfRows = rows.map((row, index) => [thousandSeparator(row.amount.toString()), row.description, row.name, formatDate(row.date), (index + 1).toString()])
         // console.log(pdfRows)
-        doc.text(title, 75, 20);
-        // console.log(filterEdit)
+        doc.text(title, 100, 20, {align: 'center'});
         doc.setFont("AmiriRegular")
+        doc.text(thousandSeparator(balance.toString()), 100, 27, {align: 'center'});
+        // console.log(filterEdit)
+
         if (filterEdit && filterEdit.fromDate && filterEdit.thruDate) {
             doc.setFontSize(10)
             doc.text(`${filterEdit?.fromDate} :از تاریخ`, 195, 25, {align: 'right'})
             doc.text(`${filterEdit?.thruDate} :تا تاریخ`, 40, 25, {align: 'right'})
             // doc.text(`نوع ${category}: ${filterEdit?.categories.join(' - ')} `, 170, 30, {align: 'right'})
         }
-        if (filterEdit.categories.length > 0)
+        if (filterEdit && filterEdit.categories.length > 0)
             autoTable(doc, {
                 startY: 30,
                 head: [[`نوع ${category}`]],
@@ -271,7 +274,7 @@ const EnhancedTableToolbar = (props) => {
                 },
             })
         autoTable(doc, {
-            startY: filterEdit.categories.length > 0 ? 50 : 30,
+            startY: filterEdit?.categories.length > 0 ? 50 : 30,
             head: [['مبلغ به تومان', 'توضیحات', category, 'تاریخ', 'ردیف']],
             body: pdfRows,
             headStyles: {
@@ -476,8 +479,14 @@ export default function MyEnhancedTable({token}) {
     else if (income) pdfTitle = 'درآمد آزمایشگاه فردوس'
 
     myTransactions.sort((a, b) => {
+        return a.category.localeCompare(b.category, 'fa')
+    })
+
+    myTransactions.sort((a, b) => {
         return a.date.localeCompare(b.date)
     })
+
+
     const rows = myTransactions.map((t) => {
         const selectedCategory = t.type === 'Income' ? incomeCategories : expenseCategories
         const category = selectedCategory.filter(item => item.type === t.category)[0].description
