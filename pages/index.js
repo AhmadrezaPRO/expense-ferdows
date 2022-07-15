@@ -123,7 +123,7 @@ export default function Index({user}) {
 
     const title = 'سامانه تنخواه آزمایشگاه فردوس'
     return (
-        <Fragment>
+        user ? <></> : <Fragment>
             <Head>
                 <title key={'title'}>{title}</title>
                 <meta
