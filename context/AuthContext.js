@@ -12,7 +12,7 @@ export const AuthProvider = ({children}) => {
 
     const router = useRouter()
 
-    // useEffect(() => checkUserLoggedIn(), [])
+    useEffect(() => checkUserLoggedIn, [])
 
     // Login user
     const login = async ({

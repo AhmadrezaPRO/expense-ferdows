@@ -46,7 +46,7 @@ function Copyright(props) {
 // const theme = createTheme();
 
 export default function Index() {
-    const { login, error } = useContext(AuthContext)
+    const { login, user } = useContext(AuthContext)
     // const [error, setError] = useState(false)
     const router = useRouter()
     const [cookies, setCookie] = useCookies(['token']);
@@ -114,6 +114,12 @@ export default function Index() {
     // }, [])
 
     const title = 'سامانه تنخواه آزمایشگاه فردوس'
+
+    useEffect(()=>{
+        if (user){
+            router.push('ExpenseTracker')
+        }
+    },[user])
     return (
         <Fragment>
             <Head>
