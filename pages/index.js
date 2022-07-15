@@ -117,7 +117,8 @@ export default function Index() {
 
     useEffect(()=>{
         if (user){
-            router.push('ExpenseTracker')
+            console.log(user)
+            router.push('/ExpenseTracker')
         }
     },[user])
     return (
