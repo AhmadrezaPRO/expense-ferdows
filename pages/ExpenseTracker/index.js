@@ -33,7 +33,7 @@ const ExpenseTracker = ({
     } = useContext(ExpenseTrackerContext);
 
     const logoutHandler = async () => {
-        logout()
+        await logout()
         await router.replace('/')
     }
 

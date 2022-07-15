@@ -25,6 +25,7 @@ import {Fragment} from "react";
 import {useRouter} from "next/router";
 import AuthContext from "../context/AuthContext";
 import Head from "next/head";
+import {parseCookies} from "utils/cookie";
 
 function Copyright(props) {
     return (
@@ -45,10 +46,11 @@ function Copyright(props) {
 
 // const theme = createTheme();
 
-export default function Index() {
-    const { login, user } = useContext(AuthContext)
-    // const [error, setError] = useState(false)
+export default function Index({user}) {
     const router = useRouter()
+    // console.log(user)
+    const { login } = useContext(AuthContext)
+    // const [error, setError] = useState(false)
     const [cookies, setCookie] = useCookies(['token']);
     // console.log(cookies.token)
     const [showPassword, setShowPassword] = useState(false)
@@ -113,14 +115,13 @@ export default function Index() {
     //     init().then()
     // }, [])
 
-    const title = 'سامانه تنخواه آزمایشگاه فردوس'
-
     useEffect(()=>{
         if (user){
-            console.log(user)
             router.push('/ExpenseTracker')
         }
-    },[user])
+    },[])
+
+    const title = 'سامانه تنخواه آزمایشگاه فردوس'
     return (
         <Fragment>
             <Head>
@@ -240,4 +241,28 @@ export default function Index() {
             </Container>
         </Fragment>
     );
+}
+
+export async function getServerSideProps({req}) {
+    // console.log(req)
+    const {token} = parseCookies(req)
+    let user = null
+    const response = await axios.get(`${API_URL}/users/me`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        }
+    })
+        .then(response => {
+            user = response.data
+        })
+        .catch(function (error) {
+            // console.log(error)
+        })
+    // console.log(user)
+    return {
+        props: {
+            user,
+            // token,
+        },
+    }
 }
