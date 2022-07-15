@@ -19,13 +19,13 @@ const Details = ({title}) => {
                         family: "Vazirmatn FD" // Add your font here to change the font of your legend label
                     }
                 },
-                tooltip: {
-                    bodyFont: {
-                        family: "Vazirmatn FD" // Add your font here to change the font of your tooltip body
-                    },
-                    titleFont: {
-                        family: "Vazirmatn FD" // Add your font here to change the font of your tooltip title
-                    }
+            },
+            tooltip: {
+                bodyFont: {
+                    family: "Vazirmatn FD" // Add your font here to change the font of your tooltip body
+                },
+                titleFont: {
+                    family: "Vazirmatn FD" // Add your font here to change the font of your tooltip title
                 }
             }
         },
