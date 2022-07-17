@@ -16,7 +16,7 @@ import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import axios from "axios";
 import {API_URL, NEXT_URL} from "../config";
 import {useCookies} from "react-cookie";
-import {InputAdornment} from "@mui/material";
+import {InputAdornment, LinearProgress} from "@mui/material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import {useContext, useEffect, useState} from "react";
 import IconButton from "@mui/material/IconButton";
@@ -49,7 +49,7 @@ function Copyright(props) {
 export default function Index({user}) {
     const router = useRouter()
     // console.log(user)
-    const { login } = useContext(AuthContext)
+    const {login} = useContext(AuthContext)
     // const [error, setError] = useState(false)
     const [cookies, setCookie] = useCookies(['token']);
     // console.log(cookies.token)
@@ -115,15 +115,18 @@ export default function Index({user}) {
     //     init().then()
     // }, [])
 
-    useEffect(()=>{
-        if (user){
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        if (user) {
             router.push('/ExpenseTracker')
+        } else {
+            setLoading(false)
         }
-    },[])
+    }, [])
 
     const title = 'سامانه تنخواه آزمایشگاه فردوس'
     return (
-         <Fragment>
+        <Fragment>
             <Head>
                 <title key={'title'}>{title}</title>
                 <meta
@@ -141,6 +144,9 @@ export default function Index({user}) {
                     href="https://expense.ferdowslab.ir"
                 />
             </Head>
+            {loading ? <Box sx={{ width: '100%' }}>
+                <LinearProgress />
+            </Box> :
             <Container
                 sx={{
                     backgroundColor: 'white',
@@ -238,7 +244,7 @@ export default function Index({user}) {
                         mb: 2
                     }}/>
                 <br/>
-            </Container>
+            </Container>}
         </Fragment>
     );
 }
