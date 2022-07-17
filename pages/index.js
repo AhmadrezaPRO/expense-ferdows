@@ -116,13 +116,13 @@ export default function Index({user}) {
     // }, [])
 
     const [loading, setLoading] = useState(true);
-    useEffect(() => {
-        if (user) {
-            router.push('/ExpenseTracker')
-        } else {
-            setLoading(false)
-        }
-    }, [])
+    // useEffect(() => {
+    //     if (user) {
+    //         router.push('/ExpenseTracker')
+    //     } else {
+    //         setLoading(false)
+    //     }
+    // }, [])
 
     const title = 'سامانه تنخواه آزمایشگاه فردوس'
     return (
@@ -144,7 +144,7 @@ export default function Index({user}) {
                     href="https://expense.ferdowslab.ir"
                 />
             </Head>
-            {loading ? <Box sx={{ width: '100%' }}>
+            {!loading ? <Box sx={{ width: '100%' }}>
                 <LinearProgress />
             </Box> :
             <Container
