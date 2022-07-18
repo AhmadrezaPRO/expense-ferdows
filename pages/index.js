@@ -14,7 +14,7 @@ import Container from '@mui/material/Container';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import axios from "axios";
-import {API_URL, NEXT_URL} from "../config";
+import {API_URL, NEXT_URL} from "config";
 import {useCookies} from "react-cookie";
 import {InputAdornment, LinearProgress} from "@mui/material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
@@ -46,7 +46,7 @@ function Copyright(props) {
 
 // const theme = createTheme();
 
-export default function Index({user}) {
+export default function Index() {
     const router = useRouter()
     // console.log(user)
     const {login} = useContext(AuthContext)
@@ -249,26 +249,26 @@ export default function Index({user}) {
     );
 }
 
-export async function getServerSideProps({req}) {
-    // console.log(req)
-    const {token} = parseCookies(req)
-    let user = null
-    const response = await axios.get(`${API_URL}/users/me`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        }
-    })
-        .then(response => {
-            user = response.data
-        })
-        .catch(function (error) {
-            // console.log(error)
-        })
-    // console.log(user)
-    return {
-        props: {
-            user,
-            // token,
-        },
-    }
-}
+// export async function getServerSideProps({req}) {
+//     // console.log(req)
+//     const {token} = parseCookies(req)
+//     let user = null
+//     const response = await axios.get(`${API_URL}/users/me`, {
+//         headers: {
+//             Authorization: `Bearer ${token}`,
+//         }
+//     })
+//         .then(response => {
+//             user = response.data
+//         })
+//         .catch(function (error) {
+//             // console.log(error)
+//         })
+//     // console.log(user)
+//     return {
+//         props: {
+//             user,
+//             // token,
+//         },
+//     }
+// }
