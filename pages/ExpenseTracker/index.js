@@ -19,7 +19,6 @@ import AuthContext from "../../context/AuthContext";
 import Head from 'next/head';
 
 const ExpenseTracker = ({
-                            transactions,
                             token
                         }) => {
     const router = useRouter()
@@ -37,10 +36,10 @@ const ExpenseTracker = ({
         await router.replace('/')
     }
 
-    useEffect(() => {
-        if (transactions)
-            initializeTransactions(transactions)
-    }, []);
+    // useEffect(() => {
+    //     if (transactions)
+    //         initializeTransactions(transactions)
+    // }, []);
 
     const title = 'سامانه تنخواه آزمایشگاه فردوس'
     return (
@@ -119,20 +118,20 @@ export async function getServerSideProps({req}) {
     const {token} = parseCookies(req)
 
     let transactions = null
-    const response = await axios.get(`${API_URL}/transactions?pagination[page]=1&pagination[pageSize]=100`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        }
-    })
-        .then(response => {
-            transactions = response.data
-        })
-        .catch(function (error) {
-            // console.log(error)
-        })
+    // const response = await axios.get(`${API_URL}/transactions?pagination[page]=1&pagination[pageSize]=100`, {
+    //     headers: {
+    //         Authorization: `Bearer ${token}`,
+    //     }
+    // })
+    //     .then(response => {
+    //         transactions = response.data
+    //     })
+    //     .catch(function (error) {
+    //         // console.log(error)
+    //     })
     return {
         props: {
-            transactions,
+            // transactions,
             token,
         },
     }

@@ -39,6 +39,7 @@ import {siLK} from "@mui/material/locale";
 
 const NumberToPersianWord = require("number_to_persian_word");
 
+const _ = require('lodash');
 
 jMoment.loadPersian({
     dialect: "persian-modern",
@@ -100,11 +101,19 @@ const Form = ({token}) => {
             toast.error('مقدار هزینه را صحیح وارد نمایید')
             return
         }
+        const convertedDate = moment().add(moment().parseZone().utcOffset(), 'minutes')
+        const date =_.cloneDeep(formData.date)
+        date.set('hour', convertedDate.hour())
+        date.set('minute', convertedDate.minute())
         const transaction = {
             ...formData,
             amount: formData.amount * 1000,
+            date: date
             // transactionId: uuidv4()
         }
+        // console.log(transaction)
+
+        // return
         axios.post(`${NEXT_URL}/transactions`,
             {
                 transaction
@@ -407,12 +416,15 @@ const Form = ({token}) => {
                             maxDate={jMoment(new Date())}
                             inputFormat="jYYYY/jMM/jDD"
                             value={formData.date}
-                            onChange={(newValue) => setFormData(prevState => {
-                                return {
-                                    ...prevState,
-                                    date: newValue
-                                }
-                            })}
+                            onChange={(newValue) => {
+                                console.log(newValue)
+                                setFormData(prevState => {
+                                    return {
+                                        ...prevState,
+                                        date: newValue
+                                    }
+                                })
+                            }}
                             renderInput={(params) =>
                                 <TextField {...params}
                                            fullWidth/>}

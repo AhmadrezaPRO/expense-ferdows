@@ -486,6 +486,7 @@ export default function MyEnhancedTable({token}) {
         return a.date.localeCompare(b.date)
     })
 
+    console.log(myTransactions)
 
     const rows = myTransactions.map((t) => {
         const selectedCategory = t.type === 'Income' ? incomeCategories : expenseCategories
