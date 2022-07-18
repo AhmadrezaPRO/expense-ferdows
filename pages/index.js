@@ -16,7 +16,7 @@ import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import axios from "axios";
 import {API_URL, NEXT_URL} from "config";
 import {useCookies} from "react-cookie";
-import {InputAdornment, LinearProgress} from "@mui/material";
+import {CircularProgress, InputAdornment, LinearProgress, Modal} from "@mui/material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
 import {useContext, useEffect, useState} from "react";
 import IconButton from "@mui/material/IconButton";
@@ -26,6 +26,8 @@ import {useRouter} from "next/router";
 import AuthContext from "../context/AuthContext";
 import Head from "next/head";
 import {parseCookies} from "utils/cookie";
+import {filterFormActions} from "store/filterForm-slice";
+import formatDate from "utils/formatDate";
 
 function Copyright(props) {
     return (
@@ -45,8 +47,19 @@ function Copyright(props) {
 }
 
 // const theme = createTheme();
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
 
-export default function Index() {
+export default function Index({token}) {
     const router = useRouter()
     // console.log(user)
     const {login} = useContext(AuthContext)
@@ -116,13 +129,20 @@ export default function Index() {
     // }, [])
 
     const [loading, setLoading] = useState(true);
-    // useEffect(() => {
-    //     if (user) {
-    //         router.push('/ExpenseTracker')
-    //     } else {
-    //         setLoading(false)
-    //     }
-    // }, [])
+    useEffect(() => {
+        const init = async () => await axios.get(`${NEXT_URL}/user`, {
+            headers: {
+                Authorization: token,
+            }
+        }).then(function (response) {
+            router.push('/ExpenseTracker')
+        })
+            .catch(function (error) {
+                setLoading(false)
+            })
+        // console.log(user)
+        init();
+    }, [])
 
     const title = 'سامانه تنخواه آزمایشگاه فردوس'
     return (
@@ -144,114 +164,138 @@ export default function Index() {
                     href="https://expense.ferdowslab.ir"
                 />
             </Head>
-            {!loading ? <Box sx={{ width: '100%' }}>
-                <LinearProgress />
-            </Box> :
-            <Container
-                sx={{
-                    backgroundColor: 'white',
-                    boxShadow: 2,
-                    borderRadius: '5px'
-                }}
-                component="main"
-                maxWidth="xs">
-                <CssBaseline/>
-                <Box
-                    sx={{
-                        marginTop: 8,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                >
-                    <Avatar
-                        sx={{
-                            m: 1,
-                            bgcolor: 'secondary.main'
-                        }}>
-                        {/*<LockOutlinedIcon />*/}
-                        <PointOfSaleIcon/>
-                    </Avatar>
-                    <Typography variant="h5">
-                        محاسبه هزینه و درآمد
-                    </Typography>
-                    <Box
-                        component="form"
-                        onSubmit={handleSubmit}
-                        noValidate
-                        sx={{mt: 1}}>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="نام کاربری"
-                            name="email"
-                            autoComplete="email"
-                            autoFocus
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="رمز عبور"
-                            // type={"text"}
-                            // sx={{fontFamily: 'sans-sarif'}}
-                            type={showPassword ? "text" : "password"}
-                            id="password"
-                            InputProps={{
-                                endAdornment: <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="toggle password visibility"
-                                        onClick={toggleShowPassword}
-                                        onMouseDown={(e) => e.preventDefault()}
-                                    >
-                                        {showPassword ? <VisibilityOff/> : <Visibility/>}
-                                    </IconButton>
-                                </InputAdornment>,
-                            }}
-                            // autoComplete="current-password"
-                            // inputProps={{
-                            //     autocomplete: "current-password",
-                            //     form: {
-                            //         autocomplete: 'on',
-                            //     },
-                            // }}
-                        />
-                        {/*<FormControlLabel*/}
-                        {/*    control={<Checkbox*/}
-                        {/*        value="remember"*/}
-                        {/*        color="primary"/>}*/}
-                        {/*    label="مرا به خاطر بسپار"*/}
-                        {/*/>*/}
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{
-                                mt: 3,
-                                mb: 2
-                            }}
-                        >
-                            ورود به حساب کاربری
-                        </Button>
+            {loading ? <>
+                    <Box sx={{width: '100%'}}>
+                        <LinearProgress/>
                     </Box>
-                </Box>
-                <Copyright
+                    <Modal
+                        open={true}
+                        aria-labelledby="modal-modal-title"
+                        aria-describedby="modal-modal-description"
+                    >
+                        <Box sx={style}>
+                            <Typography
+                                id="modal-modal-title"
+                                variant="h6"
+                                component="h2">
+                                در حال ورود ...
+                            </Typography>
+                        </Box>
+                    </Modal>
+                </>
+                :
+                <Container
                     sx={{
-                        mt: 2,
-                        mb: 2
-                    }}/>
-                <br/>
-            </Container>}
+                        backgroundColor: 'white',
+                        boxShadow: 2,
+                        borderRadius: '5px'
+                    }}
+                    component="main"
+                    maxWidth="xs">
+                    <CssBaseline/>
+                    <Box
+                        sx={{
+                            marginTop: 8,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Avatar
+                            sx={{
+                                m: 1,
+                                bgcolor: 'secondary.main'
+                            }}>
+                            {/*<LockOutlinedIcon />*/}
+                            <PointOfSaleIcon/>
+                        </Avatar>
+                        <Typography variant="h5">
+                            محاسبه هزینه و درآمد
+                        </Typography>
+                        <Box
+                            component="form"
+                            onSubmit={handleSubmit}
+                            noValidate
+                            sx={{mt: 1}}>
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="email"
+                                label="نام کاربری"
+                                name="email"
+                                autoComplete="email"
+                                autoFocus
+                            />
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="password"
+                                label="رمز عبور"
+                                // type={"text"}
+                                // sx={{fontFamily: 'sans-sarif'}}
+                                type={showPassword ? "text" : "password"}
+                                id="password"
+                                InputProps={{
+                                    endAdornment: <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={toggleShowPassword}
+                                            onMouseDown={(e) => e.preventDefault()}
+                                        >
+                                            {showPassword ? <VisibilityOff/> : <Visibility/>}
+                                        </IconButton>
+                                    </InputAdornment>,
+                                }}
+                                // autoComplete="current-password"
+                                // inputProps={{
+                                //     autocomplete: "current-password",
+                                //     form: {
+                                //         autocomplete: 'on',
+                                //     },
+                                // }}
+                            />
+                            {/*<FormControlLabel*/}
+                            {/*    control={<Checkbox*/}
+                            {/*        value="remember"*/}
+                            {/*        color="primary"/>}*/}
+                            {/*    label="مرا به خاطر بسپار"*/}
+                            {/*/>*/}
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                sx={{
+                                    mt: 3,
+                                    mb: 2
+                                }}
+                            >
+                                ورود به حساب کاربری
+                            </Button>
+                        </Box>
+                    </Box>
+                    <Copyright
+                        sx={{
+                            mt: 2,
+                            mb: 2
+                        }}/>
+                    <br/>
+                </Container>}
         </Fragment>
     );
 }
 
-// export async function getServerSideProps({req}) {
-//     // console.log(req)
-//     const {token} = parseCookies(req)
+export async function getServerSideProps(
+    {
+        req
+    }
+) {
+    const {token} = parseCookies(req)
+    let myToken=token;
+    if (token === undefined){
+        myToken = null
+    }
 //     let user = null
 //     const response = await axios.get(`${API_URL}/users/me`, {
 //         headers: {
@@ -265,10 +309,9 @@ export default function Index() {
 //             // console.log(error)
 //         })
 //     // console.log(user)
-//     return {
-//         props: {
-//             user,
-//             // token,
-//         },
-//     }
-// }
+    return {
+        props: {
+            token: JSON.parse(JSON.stringify(myToken)),
+        },
+    }
+}
