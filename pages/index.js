@@ -286,32 +286,32 @@ export default function Index({token}) {
     );
 }
 
-export async function getServerSideProps(
-    {
-        req
-    }
-) {
-    const {token} = parseCookies(req)
-    let myToken=token;
-    if (token === undefined){
-        myToken = null
-    }
-//     let user = null
-//     const response = await axios.get(`${API_URL}/users/me`, {
-//         headers: {
-//             Authorization: `Bearer ${token}`,
-//         }
-//     })
-//         .then(response => {
-//             user = response.data
-//         })
-//         .catch(function (error) {
-//             // console.log(error)
-//         })
-//     // console.log(user)
-    return {
-        props: {
-            token: JSON.parse(JSON.stringify(myToken)),
-        },
-    }
-}
+// export async function getServerSideProps(
+//     {
+//         req
+//     }
+// ) {
+//     const {token} = parseCookies(req)
+//     let myToken=token;
+//     if (token === undefined){
+//         myToken = null
+//     }
+// //     let user = null
+// //     const response = await axios.get(`${API_URL}/users/me`, {
+// //         headers: {
+// //             Authorization: `Bearer ${token}`,
+// //         }
+// //     })
+// //         .then(response => {
+// //             user = response.data
+// //         })
+// //         .catch(function (error) {
+// //             // console.log(error)
+// //         })
+// //     // console.log(user)
+//     return {
+//         props: {
+//             token: JSON.parse(JSON.stringify(myToken)),
+//         },
+//     }
+// }
