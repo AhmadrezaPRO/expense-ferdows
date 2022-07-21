@@ -61,6 +61,7 @@ const style = {
 };
 
 export default function Index({token}) {
+    console.log(token)
     const router = useRouter()
     // console.log(user)
     const {login} = useContext(AuthContext)
@@ -134,7 +135,7 @@ export default function Index({token}) {
                     href="https://expense.ferdowslab.ir"
                 />
             </Head>
-            {loading ? <>
+            {!loading ? <>
                     <Box sx={{width: '100%'}}>
                         <LinearProgress/>
                     </Box>
@@ -261,6 +262,7 @@ export async function getServerSideProps(
         req
     }
 ) {
+    return { props: { token: req.cookies.token || "" } };
     if (!req?.headers.cookie) return {
         props: {
             token: null,
