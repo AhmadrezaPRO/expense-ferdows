@@ -61,12 +61,11 @@ const style = {
 };
 
 export default function Index({token}) {
-    console.log(token)
+    // console.log(token)
     const router = useRouter()
     // console.log(user)
     const {login} = useContext(AuthContext)
     // const [error, setError] = useState(false)
-    // const [cookies, setCookie] = useCookies(['token']);
     // console.log(cookies.token)
     const [showPassword, setShowPassword] = useState(false)
     const toggleShowPassword = () => {
@@ -99,12 +98,13 @@ export default function Index({token}) {
         // });
     }
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         const init = async () => await axios.get(`${NEXT_URL}/user`, {
             headers: {
                 Authorization: token,
-            }
+            },
+            timeout: 5000,
         }).then(function (response) {
             router.push('/ExpenseTracker')
         })
@@ -113,7 +113,7 @@ export default function Index({token}) {
             })
         // console.log(user)
         if (token) init();
-    }, [])
+    }, [token])
 
     const title = 'سامانه تنخواه آزمایشگاه فردوس'
     return (
@@ -135,7 +135,7 @@ export default function Index({token}) {
                     href="https://expense.ferdowslab.ir"
                 />
             </Head>
-            {!loading ? <>
+            {loading ? <>
                     <Box sx={{width: '100%'}}>
                         <LinearProgress/>
                     </Box>
@@ -262,7 +262,8 @@ export async function getServerSideProps(
         req
     }
 ) {
-    return { props: { token: req.cookies.token || "" } };
+    console.log(req?.cookies?.token)
+    return {props: {token: req.cookies.token || ""}};
     if (!req?.headers.cookie) return {
         props: {
             token: null,
