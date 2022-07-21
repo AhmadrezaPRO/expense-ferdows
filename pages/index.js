@@ -128,21 +128,21 @@ export default function Index({token}) {
     //     init().then()
     // }, [])
 
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-        const init = async () => await axios.get(`${NEXT_URL}/user`, {
-            headers: {
-                Authorization: token,
-            }
-        }).then(function (response) {
-            router.push('/ExpenseTracker')
-        })
-            .catch(function (error) {
-                setLoading(false)
-            })
-        // console.log(user)
-        init();
-    }, [])
+    const [loading, setLoading] = useState(false);
+    // useEffect(() => {
+    //     const init = async () => await axios.get(`${NEXT_URL}/user`, {
+    //         headers: {
+    //             Authorization: token,
+    //         }
+    //     }).then(function (response) {
+    //         router.push('/ExpenseTracker')
+    //     })
+    //         .catch(function (error) {
+    //             setLoading(false)
+    //         })
+    //     // console.log(user)
+    //     init();
+    // }, [])
 
     const title = 'سامانه تنخواه آزمایشگاه فردوس'
     return (
