@@ -115,7 +115,6 @@ const ExpenseTracker = ({
 export default ExpenseTracker
 
 export async function getServerSideProps({req}) {
-    return { props: { token: req.cookies.token || "" } };
     const {token} = parseCookies(req)
 
     // let transactions = null
