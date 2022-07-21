@@ -28,6 +28,7 @@ import Head from "next/head";
 import {parseCookies} from "utils/cookie";
 import {filterFormActions} from "store/filterForm-slice";
 import formatDate from "utils/formatDate";
+import cookie from "cookie";
 
 function Copyright(props) {
     return (
@@ -64,7 +65,7 @@ export default function Index({token}) {
     // console.log(user)
     const {login} = useContext(AuthContext)
     // const [error, setError] = useState(false)
-    const [cookies, setCookie] = useCookies(['token']);
+    // const [cookies, setCookie] = useCookies(['token']);
     // console.log(cookies.token)
     const [showPassword, setShowPassword] = useState(false)
     const toggleShowPassword = () => {
@@ -97,52 +98,21 @@ export default function Index({token}) {
         // });
     }
 
-    // useEffect(() => {
-    //     const init = async () => {
-    //         // if (cookies.token === undefined) {
-    //         //     setError(true)
-    //         // } else {
-    //
-    //
-    //         axios.get(`${API_URL}/users/me`, {
-    //             headers: {
-    //                 Authorization: cookies.token
-    //             }
-    //         })
-    //             .then(function (response) {
-    //                 setError(false)
-    //                 router.replace('/ExpenseTracker')
-    //             })
-    //             .catch(function (error) {
-    //                 setError(true)
-    //                 // console.log(error);
-    //             })
-    //             .then(function () {
-    //                 // always executed
-    //             })
-    //
-    //
-    //
-    //         // }
-    //     }
-    //     init().then()
-    // }, [])
-
     const [loading, setLoading] = useState(false);
-    // useEffect(() => {
-    //     const init = async () => await axios.get(`${NEXT_URL}/user`, {
-    //         headers: {
-    //             Authorization: token,
-    //         }
-    //     }).then(function (response) {
-    //         router.push('/ExpenseTracker')
-    //     })
-    //         .catch(function (error) {
-    //             setLoading(false)
-    //         })
-    //     // console.log(user)
-    //     init();
-    // }, [])
+    useEffect(() => {
+        const init = async () => await axios.get(`${NEXT_URL}/user`, {
+            headers: {
+                Authorization: token,
+            }
+        }).then(function (response) {
+            router.push('/ExpenseTracker')
+        })
+            .catch(function (error) {
+                setLoading(false)
+            })
+        // console.log(user)
+        if (token) init();
+    }, [])
 
     const title = 'سامانه تنخواه آزمایشگاه فردوس'
     return (
@@ -286,32 +256,35 @@ export default function Index({token}) {
     );
 }
 
-// export async function getServerSideProps(
-//     {
-//         req
-//     }
-// ) {
-//     const {token} = parseCookies(req)
-//     let myToken=token;
-//     if (token === undefined){
-//         myToken = null
-//     }
-// //     let user = null
-// //     const response = await axios.get(`${API_URL}/users/me`, {
-// //         headers: {
-// //             Authorization: `Bearer ${token}`,
-// //         }
-// //     })
-// //         .then(response => {
-// //             user = response.data
-// //         })
-// //         .catch(function (error) {
-// //             // console.log(error)
-// //         })
-// //     // console.log(user)
-//     return {
-//         props: {
-//             token: JSON.parse(JSON.stringify(myToken)),
-//         },
-//     }
-// }
+export async function getServerSideProps(
+    {
+        req
+    }
+) {
+    if (!req?.headers.cookie) return {
+        props: {
+            token: null,
+        },
+    }
+    else {
+        const {token} = parseCookies(req)
+//     let user = null
+//     const response = await axios.get(`${API_URL}/users/me`, {
+//         headers: {
+//             Authorization: `Bearer ${token}`,
+//         }
+//     })
+//         .then(response => {
+//             user = response.data
+//         })
+//         .catch(function (error) {
+//             // console.log(error)
+//         })
+//     // console.log(user)
+        return {
+            props: {
+                token,
+            },
+        }
+    }
+}
