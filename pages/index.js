@@ -319,25 +319,25 @@ export default function Index({token}) {
 // }
 
 //copy from other page
-// export async function getServerSideProps({req}) {
-//     const {token} = parseCookies(req)
-//
-//     // let transactions = null
-//     // const response = await axios.get(`${API_URL}/transactions?pagination[page]=1&pagination[pageSize]=100`, {
-//     //     headers: {
-//     //         Authorization: `Bearer ${token}`,
-//     //     }
-//     // })
-//     //     .then(response => {
-//     //         transactions = response.data
-//     //     })
-//     //     .catch(function (error) {
-//     //         // console.log(error)
-//     //     })
-//     return {
-//         props: {
-//             // transactions,
-//             token: token || "",
-//         },
-//     }
-// }
+export async function getServerSideProps({req}) {
+    const {token} = parseCookies(req)
+
+    // let transactions = null
+    // const response = await axios.get(`${API_URL}/transactions?pagination[page]=1&pagination[pageSize]=100`, {
+    //     headers: {
+    //         Authorization: `Bearer ${token}`,
+    //     }
+    // })
+    //     .then(response => {
+    //         transactions = response.data
+    //     })
+    //     .catch(function (error) {
+    //         // console.log(error)
+    //     })
+    return {
+        props: {
+            // transactions,
+            token: token || "",
+        },
+    }
+}
