@@ -142,7 +142,7 @@ export default function Index({token}) {
                 setLoading(false)
             })
         // console.log(user)
-        init();
+        if (token) init();
     }, [])
 
     const title = 'سامانه تنخواه آزمایشگاه فردوس'
@@ -318,7 +318,7 @@ export default function Index({token}) {
 //     }
 // }
 
-//copy from other page
+// copy from other page
 export async function getServerSideProps({req}) {
     const {token} = parseCookies(req)
 
