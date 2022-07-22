@@ -128,22 +128,22 @@ export default function Index({token}) {
     //     init().then()
     // }, [])
 
-    const [loading, setLoading] = useState(false);
-    // useEffect(() => {
-    //     const init = async () => await axios.get(`${NEXT_URL}/user`, {
-    //         timeout: 5000,
-    //         headers: {
-    //             Authorization: token,
-    //         }
-    //     }).then(function (response) {
-    //         router.push('/ExpenseTracker')
-    //     })
-    //         .catch(function (error) {
-    //             setLoading(false)
-    //         })
-    //     // console.log(user)
-    //     init();
-    // }, [])
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        const init = async () => await axios.get(`${NEXT_URL}/user`, {
+            timeout: 5000,
+            headers: {
+                Authorization: token,
+            }
+        }).then(function (response) {
+            router.push('/ExpenseTracker')
+        })
+            .catch(function (error) {
+                setLoading(false)
+            })
+        // console.log(user)
+        init();
+    }, [])
 
     const title = 'سامانه تنخواه آزمایشگاه فردوس'
     return (
@@ -320,7 +320,7 @@ export default function Index({token}) {
 
 //copy from other page
 export async function getServerSideProps({req}) {
-    // const {token} = parseCookies(req)
+    const {token} = parseCookies(req)
 
     // let transactions = null
     // const response = await axios.get(`${API_URL}/transactions?pagination[page]=1&pagination[pageSize]=100`, {
@@ -337,7 +337,7 @@ export async function getServerSideProps({req}) {
     return {
         props: {
             // transactions,
-            token: "",
+            token: token || "salam",
         },
     }
 }
