@@ -142,7 +142,7 @@ export default function Index({token}) {
                 setLoading(false)
             })
         // console.log(user)
-        if (token) init();
+        if (token) init() else setLoading(false)
     }, [])
 
     const title = 'سامانه تنخواه آزمایشگاه فردوس'
