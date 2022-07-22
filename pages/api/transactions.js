@@ -89,6 +89,6 @@ export default async (req, res) => {
             })
     } else {
         res.setHeader('Allow', ['POST'])
-        res.status(405).json({message: `Method ${req.method} not allowed`})
+        return res.status(405).json({message: `Method ${req.method} not allowed`})
     }
 }

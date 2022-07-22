@@ -179,7 +179,7 @@ const Form = ({token}) => {
                 }
             }
         ).then(res => {
-            console.log(res)
+            // console.log(res)
             editTransactions({
                 ...res.data.data.attributes,
                 id: res.data.data.id

@@ -132,7 +132,7 @@ export async function getServerSideProps({req}) {
     return {
         props: {
             // transactions,
-            token,
+            token: token || "",
         },
     }
 }
