@@ -320,7 +320,7 @@ export default function Index({token}) {
 
 //copy from other page
 export async function getServerSideProps({req}) {
-    const {token} = parseCookies(req)
+    // const {token} = parseCookies(req)
 
     // let transactions = null
     // const response = await axios.get(`${API_URL}/transactions?pagination[page]=1&pagination[pageSize]=100`, {
@@ -337,7 +337,7 @@ export async function getServerSideProps({req}) {
     return {
         props: {
             // transactions,
-            token: token || "",
+            token: "",
         },
     }
 }
