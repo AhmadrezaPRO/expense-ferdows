@@ -73,7 +73,7 @@ export const expenseCategories = [
         color: expenseColors[5]
     },
     {
-        type: 'consume',
+        type: 'consumable',
         description: 'موارد مصرفی',
         amount: 0,
         color: expenseColors[6]
