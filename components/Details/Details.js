@@ -27,8 +27,20 @@ const Details = ({title}) => {
         }
     });
     const legends = [...mixed].sort((a, b) => b.amount - a.amount);
+    const bgColor = {
+        id: 'bgColor',
+        beforeDraw(chart, args, options) {
+            const {ctx, width, height} = chart
+            ctx.fillStyle = options.backgroundColor
+            ctx.fillRect(0,0, width, height)
+            ctx.restore()
+        }
+    }
     const options = {
         plugins: {
+            bgColor:{
+                backgroundColor: 'white'
+            },
             legend: {
                 display: false,
                 rtl: true,
@@ -50,7 +62,7 @@ const Details = ({title}) => {
         },
     }
     return (
-        <Card className={title === 'هزینه' ? classes.expense : classes.income}>
+        <Card id={title === 'هزینه' ? 'expenseCart' : 'incomeCart'} className={title === 'هزینه' ? classes.expense : classes.income}>
             <CardHeader title={title}/>
             <CardContent>
                 <Typography variant="h5">
@@ -62,19 +74,25 @@ const Details = ({title}) => {
                     />
                 </Typography>
                 <Chart
+                    plugins={[bgColor]}
+                    id={title === 'هزینه' ? 'expenseChart' : 'incomeChart'}
                     type='doughnut'
                     data={chartData}
                     options={options}/>
                 {/*{labels.map(label => <div>{label}</div>)}*/}
-                {legends.map(legend =>
-                    <Box sx={{display: 'flex', alignItems: "center"}}>
-                        <Box sx={{
-                            height: '10px',
-                            width: '40px',
-                            backgroundColor: legend.color
-                        }}/>
-                        {`\xa0${legend.label} : ${thousandSeparator(legend.amount.toString())}`}
-                    </Box>)}
+                <Box id={title === 'هزینه' ? 'expenseLegends' : 'incomeLegends'} >
+                    {legends.map(legend =>
+                        <Box sx={{display: 'flex', alignItems: "center"}}>
+                            <Box sx={{
+                                height: '10px',
+                                width: '40px',
+                                backgroundColor: legend.color
+                            }}/>
+                            <Typography variant="h5" component="div" sx={{fontSize: '1.2rem'}}>
+                                {`\xa0${legend.label} : ${thousandSeparator(legend.amount.toString())}`}
+                            </Typography>
+                        </Box>)}
+                </Box>
             </CardContent>
             {/*<List type={title === 'هزینه' ? 'Expense' : 'Income'} />*/}
         </Card>

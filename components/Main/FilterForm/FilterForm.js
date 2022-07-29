@@ -116,7 +116,7 @@ const FilterForm = ({token}) => {
 
     const handleChangeMulti = (event) => {
         const {
-            target: { value },
+            target: {value},
         } = event;
         console.log(event)
         setFormData({
@@ -164,15 +164,15 @@ const FilterForm = ({token}) => {
             // const multiCategories = _.cloneDeep( formData.categories ).map((description)=>{
             //     return selectedCategory.find( item => item.description === description).type
             // })
-            const categories = formData.categories.map((description)=>{
-                return selectedCategory.find( item => item.description === description).type
+            const categories = formData.categories.map((description) => {
+                return selectedCategory.find(item => item.description === description).type
             })
             // console.log(multiCategories)
             // console.log(categories)
-            const dateQuery= checked ? `?filters[date][$gte]=${fromDate}&filters[date][$lte]=${thruDate}` : '?'
+            const dateQuery = checked ? `?filters[date][$gte]=${fromDate}&filters[date][$lte]=${thruDate}` : '?'
             const typeQuery = formData.type !== 'All' && formData.type !== '' ? `&filters[type]=${formData.type}` : ''
             // const categoryQuery = formData.category !== 'All' && formData.category !== '' ? `&filters[category]=${formData.category}` : ''
-            const categoriesQuery = formData.categories.length>0 ? categories.map((category)=> (`&filters[category]=${category}`)).join('') : ''
+            const categoriesQuery = formData.categories.length > 0 ? categories.map((category) => (`&filters[category]=${category}`)).join('') : ''
             console.log(categoriesQuery)
             axios.get(`${NEXT_URL}/transactions`, {
                 headers: {
@@ -264,21 +264,25 @@ const FilterForm = ({token}) => {
                     item
                     xs={6}>
                     <FormControl fullWidth>
-                        <InputLabel sx={sx.inputLabel} id="demo-multiple-checkbox-label">&nbsp;نوع {myType}</InputLabel>
+                        <InputLabel
+                            sx={sx.inputLabel}
+                            id="demo-multiple-checkbox-label">&nbsp;نوع {myType}</InputLabel>
                         <Select
                             labelId="demo-multiple-checkbox-label"
                             id="demo-multiple-checkbox"
                             multiple
                             value={formData.categories}
                             onChange={handleChangeMulti}
-                            input={<OutlinedInput label="Tag" />}
+                            input={<OutlinedInput label="Tag"/>}
                             renderValue={(selected) => selected.join(', ')}
                             MenuProps={MenuProps}
                         >
                             {selectedCategory.map((item) => (
-                                <MenuItem key={item.type} value={item.description}>
-                                    <Checkbox checked={formData.categories.indexOf(item.description) > -1} />
-                                    <ListItemText primary={item.description} />
+                                <MenuItem
+                                    key={item.type}
+                                    value={item.description}>
+                                    <Checkbox checked={formData.categories.indexOf(item.description) > -1}/>
+                                    <ListItemText primary={item.description}/>
                                 </MenuItem>
                             ))}
                         </Select>
@@ -353,12 +357,20 @@ const FilterForm = ({token}) => {
                             maxDate={jMoment(new Date())}
                             inputFormat="jYYYY/jMM/jDD"
                             value={formData.fromDate}
-                            onChange={(newValue) => setFormData(prevState => {
-                                return {
-                                    ...prevState,
-                                    fromDate: newValue
+                            onChange={(newValue) => {
+                                // console.log(newValue)
+                                if (newValue._isValid)
+                                    setFormData(prevState => {
+                                        console.log(newValue)
+                                        return {
+                                            ...prevState,
+                                            fromDate: newValue
+                                        }
+                                    })
+                                else {
+
                                 }
-                            })}
+                            }}
                             renderInput={(params) =>
                                 <TextField {...params}
                                            fullWidth/>}

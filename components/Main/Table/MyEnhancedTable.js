@@ -43,6 +43,8 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import jsPDF from 'jspdf';
 import autoTable from "jspdf-autotable";
 import {thousandSeparator} from "utils/formatNumbers";
+import html2canvas from "html2canvas";
+import useTransactions from "hooks/useTransactions";
 
 const useStyles = makeStyles()({
     tableCell: {
@@ -193,13 +195,18 @@ EnhancedTableHead.propTypes = {
 };
 
 const EnhancedTableToolbar = (props) => {
+    const {
+        chartData,
+    } = useTransactions('هزینه');
+    const income = useTransactions('درآمد')
+    const labels = chartData.labels
+    const incomeLabels = income.chartData.labels
     const {balance} = useContext(ExpenseTrackerContext)
     const filterEdit = useSelector(state => state.filterForm.filterForm)
     const token = props.token
     const rows = props.rows
     const title = props.title
     const category = title.replace(' آزمایشگاه فردوس', '')
-    const [cookies] = useCookies(['token'])
     const [filter, setFilter] = useState(false)
     const f = useSelector(state => state.form.form)
     const dispatch = useDispatch()
@@ -221,7 +228,11 @@ const EnhancedTableToolbar = (props) => {
         ))
     }
 
-    const pdfHandler = () => {
+    const expenseChartHandler = ()=>{
+
+    }
+
+    const pdfHandler = async () => {
         const doc = new jsPDF()
         doc.addFileToVFS(
             "(A) Arslan Wessam A (A) Arslan Wessam A-normal.ttf",
@@ -257,24 +268,59 @@ const EnhancedTableToolbar = (props) => {
             doc.text(`${filterEdit?.thruDate} :تا تاریخ`, 40, 25, {align: 'right'})
             // doc.text(`نوع ${category}: ${filterEdit?.categories.join(' - ')} `, 170, 30, {align: 'right'})
         }
-        if (filterEdit && filterEdit.categories.length > 0)
-            autoTable(doc, {
-                startY: 30,
-                head: [[`نوع ${category}`]],
-                body: [[`${filterEdit?.categories.join(' - ')} `]],
-                headStyles: {
-                    font: "Amiri",
-                    fontStyle: 'normal',
-                    halign: "right"
-                },
-                bodyStyles: {
-                    font: "AmiriRegular",
-                    fontStyle: 'normal',
-                    halign: "right"
-                },
-            })
+        if (category === 'هزینه') {
+            const expenseCanvas = document.getElementById('expenseChart')
+            const expenseImage = expenseCanvas.toDataURL('image/jpeg', 1.0)
+            doc.addImage(expenseImage, 'JPEG', 10, 30, 100, 100)
+
+            const canvasExpense = await html2canvas(document.querySelector("#expenseLegends"))
+            const expenseLegend = canvasExpense.toDataURL("image/png", 1.0)
+            doc.addImage(expenseLegend, 'JPEG', 110, 35, 85, labels.length * 6.5)
+
+        } else if (category === 'درآمد'){
+            const incomeCanvas = document.getElementById('incomeChart')
+            const incomeImage = incomeCanvas.toDataURL('image/jpeg', 1.0)
+            doc.addImage(incomeImage, 'JPEG', 10, 30, 100, 100)
+
+            const canvasIncome = await html2canvas(document.querySelector("#incomeLegends"))
+            const incomeLegend = canvasIncome.toDataURL("image/png", 1.0)
+            doc.addImage(incomeLegend, 'JPEG', 110, 35, 85, incomeLabels.length * 7.5)
+        }
+        else {
+            const expenseCanvas = document.getElementById('expenseChart')
+            const expenseImage = expenseCanvas.toDataURL('image/jpeg', 1.0)
+            doc.addImage(expenseImage, 'JPEG', 10, 30, 100, 100)
+            const canvas = await html2canvas(document.querySelector("#expenseLegends"))
+            const expenseLegend = canvas.toDataURL("image/png", 1.0)
+            doc.addImage(expenseLegend, 'JPEG', 110, 35, 85, labels.length * 6.5)
+
+            const incomeCanvas = document.getElementById('incomeChart')
+            const incomeImage = incomeCanvas.toDataURL('image/jpeg', 1.0)
+            doc.addImage(incomeImage, 'JPEG', 10, 155, 100, 100)
+            const canvasTwo = await html2canvas(document.querySelector("#incomeLegends"))
+            const incomeLegend = canvasTwo.toDataURL("image/png", 1.0)
+            doc.addImage(incomeLegend, 'JPEG', 110, 160, 85, incomeLabels.length * 7.5)
+
+            doc.addPage()
+        }
+        // if (filterEdit && filterEdit.categories.length > 0)
+        //     autoTable(doc, {
+        //         startY: 30,
+        //         head: [[`نوع ${category}`]],
+        //         body: [[`${filterEdit?.categories.join(' - ')} `]],
+        //         headStyles: {
+        //             font: "Amiri",
+        //             fontStyle: 'normal',
+        //             halign: "right"
+        //         },
+        //         bodyStyles: {
+        //             font: "AmiriRegular",
+        //             fontStyle: 'normal',
+        //             halign: "right"
+        //         },
+        //     })
         autoTable(doc, {
-            startY: filterEdit?.categories.length > 0 ? 50 : 30,
+            startY: category!== 'هزینه/درآمد' ? 135 : 20,
             head: [['مبلغ به تومان', 'توضیحات', category, 'تاریخ', 'ردیف']],
             body: pdfRows,
             headStyles: {
